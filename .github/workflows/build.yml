@@ -1,0 +1,162 @@
+name: Release CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: '发布类型'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+        - stable
+        - beta
+        - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set branch by release_type
+      id: set_branch
+      run: |
+        if [ "${{ github.event.inputs.release_type }}" = "stable" ]; then
+          echo "branch=main" >> $GITHUB_ENV
+        elif [ "${{ github.event.inputs.release_type }}" = "beta" ]; then
+          echo "branch=beta" >> $GITHUB_ENV
+        else
+          echo "branch=dev" >> $GITHUB_ENV
+        fi
+
+    - name: Checkout code from mytv-Internal
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+        repository: 'mytv-android/mytv-Internal'
+        ref: ${{ env.branch }}
+        fetch-depth: 0
+        submodules: 'recursive'
+        token: ${{ secrets.INTERNAL_REPO_TOKEN }}
+    
+    - name: Init Empty Changelog
+      run: |
+          {
+            echo "changelog<<EOF"
+            echo "## Changelog"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+    - name: Get changelog
+      id: changelog
+      run:  |
+        echo "changelog<<EOF" >> $GITHUB_ENV
+        cat change.log >> $GITHUB_ENV || true
+        echo "EOF" >> $GITHUB_ENV
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Setup Gradle to generate and submit dependency graphs
+      uses: gradle/actions/setup-gradle@v5
+      with:
+        dependency-graph: generate-and-submit
+        cache-overwrite-existing: true
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Add signing properties
+      run: |
+          echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
+          base64 -d -i encoded_signing_properties > signing.properties
+
+    - name: Add jks file
+      run: |
+          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
+          base64 -d -i encoded_key > keystore.jks
+      
+    - name: Set build type
+      run: |
+        if [ "${{ github.event.inputs.release_type }}" = "stable" ] || [ "${{ github.event.inputs.release_type }}" = "beta" ]; then
+          echo "build_type=release" >> $GITHUB_ENV
+        else
+          echo "build_type=debug" >> $GITHUB_ENV
+        fi
+
+    - name: Build with Gradle (Release)
+      if: github.event.inputs.release_type == 'stable' || github.event.inputs.release_type == 'beta'
+      env:
+            VERSION_CODE: ${{ github.run_number }}
+      run: |
+        ./gradlew :app:assembleRelease --stacktrace --info
+    
+    - name: Build with Gradle (Debug)
+      if: github.event.inputs.release_type == 'dev'
+      env:
+            VERSION_CODE: ${{ github.run_number }}
+      run: |
+        ./gradlew :app:assembleDebug --warning-mode=all
+
+    - name: Move Metadata (Dev)
+      if: github.event.inputs.release_type == 'dev'
+      run: |
+        mkdir -p app/build/outputs/apk/release
+        cp app/build/outputs/apk/debug/output-metadata.json app/build/outputs/apk/release/output-metadata.json
+        cp app/build/outputs/apk/debug/*.apk app/build/outputs/apk/release/
+
+    - name: Read apk output metadata
+      id: apk-meta-release
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: app/build/outputs/apk/release/output-metadata.json
+
+    - name: Parse apk infos
+      run: |
+        echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Release)
+      if: github.event.inputs.release_type == 'stable'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} 稳定版本" >> $GITHUB_ENV
+        echo "gitee_repo=mytvstable" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Beta)
+      if: github.event.inputs.release_type == 'beta'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} 预览版本" >> $GITHUB_ENV
+        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
+
+    - name: Gen Tag(Dev)
+      if: github.event.inputs.release_type == 'dev'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} 开发版本" >> $GITHUB_ENV
+        echo "gitee_repo=mytvdev" >> $GITHUB_ENV
+        
+    - name: Publish Release
+      if: github.event.inputs.release_type == 'stable'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            app/build/outputs/apk/release/*.apk
+        tag_name: V${{ env.info_version_name }}
+        name: ${{ env.release_title }}
+        body: ${{ env.changelog }}
+        generate_release_notes: false
+        make_latest: true
+
+    - name: Publish Pre-Release
+      if: github.event.inputs.release_type == 'beta' || github.event.inputs.release_type == 'dev'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            app/build/outputs/apk/release/*.apk
+        tag_name: V${{ env.info_version_name }}
+        name: ${{ env.release_title }}
+        body: ${{ env.changelog }}
+        generate_release_notes: false
+        prerelease: true
