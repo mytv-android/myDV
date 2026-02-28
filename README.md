@@ -1,6 +1,5 @@
 <div align="center">
     <h1>my Debug Video<sup>TV</sup></h1>
-<div align="center">
 
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/mytv-android/myDV)
@@ -9,6 +8,8 @@
 [![GitHub](https://img.shields.io/github/license/mytv-android/myDV)](https://github.com/mytv-android/myDV)
 
 </div>
+<div  align="center">
+    <img src="./img/play_store_feature_graphic.png" width="100%"/>
     <p>卡是正常的，保持深呼吸</p>
 </div>
 
@@ -29,7 +30,11 @@
 
 ### 操作方式
 
-按到哪儿算哪儿吧
+~~按到哪儿算哪儿吧~~
+
+- 上下左右键移动焦点
+- 在首页，按确定键以显示/隐藏视频详情，长按确认键进入当前发布者主页，左右键调整视频进度，返回键回到导航栏。
+- 连续按两次退出以退出应用
 
 ### 卸载
 
