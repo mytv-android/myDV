@@ -90,6 +90,8 @@ jobs:
     - name: Build with Gradle (Release)
       if: github.event.inputs.release_type == 'stable' || github.event.inputs.release_type == 'beta'
       env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
       run: |
         ./gradlew :app:assembleRelease --stacktrace --info
@@ -97,6 +99,8 @@ jobs:
     - name: Build with Gradle (Debug)
       if: github.event.inputs.release_type == 'dev'
       env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
       run: |
         ./gradlew :app:assembleDebug --warning-mode=all
