@@ -10,10 +10,10 @@
     "id": "announcement_20240101",
     "title": "欢迎使用 myDV",
     "content": "感谢您使用 myDV！\n\n本应用是一款抖音视频播放器，支持：\n- 推荐视频浏览\n- 直播观看\n- 弹幕显示\n- 视频搜索\n\n如有问题，请访问 GitHub 提交 Issue。",
-    "isForced": false,
+"isForced": true,
     "confirmText": "我知道了",
     "cancelText": "关闭",
-    "showCancel": true,
+   "showCancel": false,
     "version": 1
   }
 }
