@@ -1,0 +1,17 @@
+name: 反馈
+description: 提交任何反馈或建议
+title: "（一句话总结你的内容）"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先在issue中搜索（含已关闭的issue），确认所提出的内容未被提出过。
+        ⚠️ 警告：未按本模板填写或缺少关键信息的 Issue 将被直接关闭。 
+        ⚠️ 警告：以下内容被人反复询问，特此注明此类内容不会考虑：兼容Android 5及以下，点赞功能，开放源代码
+  - type: textarea
+    attributes:
+      label: 内容
+      description: 完整、清晰的描述你的需求，请勿使用大模型（如豆包）生成大段无意义内容，否则开发者将忽略。
+      placeholder: 内容描述
+    validations:
+      required: true
