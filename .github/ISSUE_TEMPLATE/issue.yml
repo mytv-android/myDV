@@ -11,7 +11,7 @@ body:
   - type: textarea
     attributes:
       label: 内容
-      description: 完整、清晰的描述你的需求，请勿使用大模型（如豆包）生成大段无意义内容，否则开发者将忽略。
+      description: 完整、清晰的描述你的需求，如果涉及视频播放，务必附上logcat日志（在扫码填写Cookie的网页中可导出）。请勿使用大模型（如豆包）生成大段无意义内容，否则开发者将忽略。
       placeholder: 内容描述
     validations:
       required: true
