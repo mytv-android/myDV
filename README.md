@@ -25,6 +25,8 @@
 
 可以使用我们的姊妹项目[mytv-android](https://github.com/mytv-android/mytv-android)来安装（但你需要先安装它）
 
+另外推荐使用[易用TV助手](https://github.com/pangtugg/easytv-partner)来管理和查看有关配置教程
+
 ### Cookie填写
 
 - 如需登录，需要在设置中填写Cookie，这需要在网页端中获取。你需要登录网页端（https://www.douyin.com ），并使用Chrome插件（例如https://chromewebstore.google.com/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm ），并从插件复制登录后的所有Cookie（就举例的插件而言，点击插件，点击右下角的Export，选择以“Header String”格式导出，图文并茂教程可以参考这里的第一步和第二步https://support-orig.hubstudio.cn/7794/e1fd ）.
