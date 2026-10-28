@@ -9,7 +9,7 @@
 
 </div>
 <div  align="center">
-    <img src="./img/play_store_feature_graphic.png" width="100%"/>
+    <img src="./img/banner.png" alt="myDV" width="100%"/>
     <p>卡是正常的，保持深呼吸</p>
 </div>
 
