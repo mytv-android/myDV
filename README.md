@@ -13,6 +13,27 @@
     <p>卡是正常的，保持深呼吸</p>
 </div>
 
+## 界面
+
+以下截图来自 Android 模拟器实拍，同一版本 `2.3.45`，覆盖手机、平板、电视、折叠屏与双面屏五种形态。
+
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/phone.png" height="430" alt="myDV 手机"/><br/><sub>手机 · 1080×2400</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/fold.png" width="430" alt="myDV 折叠屏"/><br/><sub>折叠屏 · 2208×1840</sub></td>
+    <td align="center" width="50%"><img src="screenshots/dualscreen.png" width="520" alt="myDV 双面屏"/><br/><sub>双面屏 · 2784×1800</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/tablet.png" width="380" alt="myDV 平板"/><br/><sub>平板 · 2560×1600</sub></td>
+    <td align="center"><img src="screenshots/tv.png" width="430" alt="myDV 电视"/><br/><sub>电视 · 1920×1080</sub></td>
+  </tr>
+</table>
+
 ## 使用教程
 
 ### 下载
